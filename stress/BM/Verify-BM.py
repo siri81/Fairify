@@ -18,7 +18,7 @@ single_input = X_test[0].reshape(1, 16)
 #print_metadata(df)
 
 # In[]
-model_dir = './../BM-Model/'
+model_dir = './../models/bank'
 result_dir = './age-'
 PARTITION_THRESHOLD = 10
 

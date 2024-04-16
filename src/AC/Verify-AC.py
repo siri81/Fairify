@@ -19,7 +19,7 @@ single_input = X_test[0].reshape(1, 13)
 
 # In[]
 model_dir = '../../models/adult/'
-result_dir = './libra/sex-'
+result_dir = './res-'
 PARTITION_THRESHOLD = 10
 
 SOFT_TIMEOUT = 100 
@@ -303,7 +303,7 @@ for model_file in model_files:
     
         import csv
         file_exists = os.path.isfile(file)
-        with open(file, "a", newline='') as fp:
+        with open(file, "w", newline='') as fp:
             if not file_exists:
                 wr = csv.writer(fp, dialect='excel')
                 wr.writerow(res_cols)
