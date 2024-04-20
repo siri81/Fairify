@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# -- coding: utf-8 --
 
 import sys
 sys.path.append('../')
@@ -54,9 +54,13 @@ def z3_layer8_ws_net(x, w, b):
 def z3_layer9_ws_net(x, w, b):     
     x9 = w[8].T @ x + b[8]
     return x9
-def z3_layer9_ws_net(x, w, b):     
-    x9 = w[8].T @ x + b[8]
-    return x9
+
+def z3_layer_ws_net(x, w, b, i): 
+    fl_x = np.array([Real('fl_x%s' % it) for it in range(len(x))])
+    for it in range(len(x)):
+        fl_x[it] = ToReal(x[it])     
+    xi = w[i - 1].T @ fl_x + b[i - 1]
+    return xi
 
 def z3_layer1_ws_net_german(x, w, b):
     fl_x = np.array([Real('fl_x%s' % i) for i in range(20)])
@@ -280,51 +284,51 @@ def singular_verification(cand, df, weight, bias, ranges, pl_lb, pl_ub):
             if candidates[layer_index][neuron_index] == 0:
                 continue
             
-            if(layer_index == 0):
+            if (layer_index == 0):
                 x = np.array([Int('x%s' % i) for i in range(len(weight[layer_index]))])
                 in_props = input_domain_constraint(df, x, ranges)
-                y = z3_layer1_ws_net(x, weight, bias)
+                y = z3_layer_ws_net(x, weight, bias, layer_index + 1)
 
-            elif(layer_index == 1):
+            else:
                 x = np.array([Real('x%s' % i) for i in range(len(weight[layer_index]))])
                 in_props = intermediate_domain_constraint(x, pl_lb, pl_ub, layer_index)
-                y = z3_layer2_ws_net(x, weight, bias)
+                y = z3_layer_ws_net(x, weight, bias, layer_index + 1)
                 
-            elif(layer_index == 2):
-                x = np.array([Real('x%s' % i) for i in range(len(weight[layer_index]))])
-                in_props = intermediate_domain_constraint(x, pl_lb, pl_ub, layer_index)
-                y = z3_layer3_ws_net(x, weight, bias)
+            # elif(layer_index == 2):
+            #     x = np.array([Real('x%s' % i) for i in range(len(weight[layer_index]))])
+            #     in_props = intermediate_domain_constraint(x, pl_lb, pl_ub, layer_index)
+            #     y = z3_layer_ws_net(x, weight, bias, layer_index + 1)
 
-            elif(layer_index == 3):
-                x = np.array([Real('x%s' % i) for i in range(len(weight[layer_index]))])
-                in_props = intermediate_domain_constraint(x, pl_lb, pl_ub, layer_index)
-                y = z3_layer4_ws_net(x, weight, bias)
+            # elif(layer_index == 3):
+            #     x = np.array([Real('x%s' % i) for i in range(len(weight[layer_index]))])
+            #     in_props = intermediate_domain_constraint(x, pl_lb, pl_ub, layer_index)
+            #     y = z3_layer_ws_net(x, weight, bias, layer_index + 1)
 
-            elif(layer_index == 4):
-                x = np.array([Real('x%s' % i) for i in range(len(weight[layer_index]))])
-                in_props = intermediate_domain_constraint(x, pl_lb, pl_ub, layer_index)
-                y = z3_layer5_ws_net(x, weight, bias)
+            # elif(layer_index == 4):
+            #     x = np.array([Real('x%s' % i) for i in range(len(weight[layer_index]))])
+            #     in_props = intermediate_domain_constraint(x, pl_lb, pl_ub, layer_index)
+            #     y = z3_layer5_ws_net(x, weight, bias)
             
-            elif(layer_index == 5):
-                x = np.array([Real('x%s' % i) for i in range(len(weight[layer_index]))])
-                in_props = intermediate_domain_constraint(x, pl_lb, pl_ub, layer_index)
-                y = z3_layer6_ws_net(x, weight, bias)
+            # elif(layer_index == 5):
+            #     x = np.array([Real('x%s' % i) for i in range(len(weight[layer_index]))])
+            #     in_props = intermediate_domain_constraint(x, pl_lb, pl_ub, layer_index)
+            #     y = z3_layer6_ws_net(x, weight, bias)
             
-            elif(layer_index == 6):
-                x = np.array([Real('x%s' % i) for i in range(len(weight[layer_index]))])
-                in_props = intermediate_domain_constraint(x, pl_lb, pl_ub, layer_index)
-                y = z3_layer7_ws_net(x, weight, bias)
+            # elif(layer_index == 6):
+            #     x = np.array([Real('x%s' % i) for i in range(len(weight[layer_index]))])
+            #     in_props = intermediate_domain_constraint(x, pl_lb, pl_ub, layer_index)
+            #     y = z3_layer7_ws_net(x, weight, bias)
                 
-            elif(layer_index == 7):
-                x = np.array([Real('x%s' % i) for i in range(len(weight[layer_index]))])
-                in_props = intermediate_domain_constraint(x, pl_lb, pl_ub, layer_index)
-                y = z3_layer8_ws_net(x, weight, bias)
+            # elif(layer_index == 7):
+            #     x = np.array([Real('x%s' % i) for i in range(len(weight[layer_index]))])
+            #     in_props = intermediate_domain_constraint(x, pl_lb, pl_ub, layer_index)
+            #     y = z3_layer8_ws_net(x, weight, bias)
             
-            elif(layer_index == 8):
-                x = np.array([Real('x%s' % i) for i in range(len(weight[layer_index]))])
-                in_props = intermediate_domain_constraint(x, pl_lb, pl_ub, layer_index)
-                y = z3_layer9_ws_net(x, weight, bias)
-
+            # elif(layer_index == 8):
+            #     x = np.array([Real('x%s' % i) for i in range(len(weight[layer_index]))])
+            #     in_props = intermediate_domain_constraint(x, pl_lb, pl_ub, layer_index)
+            #     y = z3_layer9_ws_net(x, weight, bias)
+            # print("wassap", weight[0].shape)
             s = Solver()             
             
             for i in in_props:    
@@ -532,6 +536,9 @@ def sound_prune(df, weight, bias, simulation_size, layer_net, range_dict):
     
     b_dead_node_mask, b_candidates, b_compression = \
         dead_node_from_bound(candidates, weight, bias, range_dict, ws_ub)
+    print(b_dead_node_mask)
+    for w in weight:
+        print(w.shape)
     for l in b_dead_node_mask:
         if not 0 in l:
             l[0] = 0
@@ -722,7 +729,7 @@ def prune_neurons(weight, bias, candidates):
     pr_w = copy.deepcopy(weight)
     pr_b = copy.deepcopy(bias)
     
-#    print('++++++++')
+#   \ print('++++++++')
     
     for i in range(len(weight)): # layer i
 #        print(np.shape(weight[i]))
@@ -745,4 +752,3 @@ def prune_neurons(weight, bias, candidates):
 #    print(pr_w[0].shape)
     print('Pruning done!')
     return pr_w, pr_b
-
