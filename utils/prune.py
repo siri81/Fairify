@@ -24,41 +24,15 @@ import copy
 def z3Relu(x):
     return np.vectorize(lambda y: If(y >= 0 , y, 0))(x)
 
-def z3_layer1_ws_net(x, w, b):
-    fl_x = np.array([Real('fl_x%s' % i) for i in range(13)])
-    for i in range(len(x)):
-        fl_x[i] = ToReal(x[i])     
-    x1 = w[0].T @ fl_x + b[0]
-    return x1
-def z3_layer2_ws_net(x, w, b): 
-    x2 = w[1].T @ x + b[1]
-    return x2
-def z3_layer3_ws_net(x, w, b): 
-    x3 = w[2].T @ x + b[2]
-    return x3
-def z3_layer4_ws_net(x, w, b):
-    x4 = w[3].T @ x + b[3]
-    return x4
-def z3_layer5_ws_net(x, w, b):     
-    x5 = w[4].T @ x + b[4]
-    return x5
-def z3_layer6_ws_net(x, w, b):     
-    x6 = w[5].T @ x + b[5]
-    return x6
-def z3_layer7_ws_net(x, w, b):     
-    x7 = w[6].T @ x + b[6]
-    return x7
-def z3_layer8_ws_net(x, w, b):     
-    x8 = w[7].T @ x + b[7]
-    return x8
-def z3_layer9_ws_net(x, w, b):     
-    x9 = w[8].T @ x + b[8]
-    return x9
+
 
 def z3_layer_ws_net(x, w, b, i): 
-    fl_x = np.array([Real('fl_x%s' % it) for it in range(len(x))])
-    for it in range(len(x)):
-        fl_x[it] = ToReal(x[it])     
+    fl_x = x
+    if i == 1:
+        print(type(x))
+        fl_x = np.array([Real('fl_x%s' % it) for it in range(len(x))])
+        for it in range(len(x)):
+            fl_x[it] = ToReal(x[it])     
     xi = w[i - 1].T @ fl_x + b[i - 1]
     return xi
 
@@ -293,42 +267,8 @@ def singular_verification(cand, df, weight, bias, ranges, pl_lb, pl_ub):
                 x = np.array([Real('x%s' % i) for i in range(len(weight[layer_index]))])
                 in_props = intermediate_domain_constraint(x, pl_lb, pl_ub, layer_index)
                 y = z3_layer_ws_net(x, weight, bias, layer_index + 1)
-                
-            # elif(layer_index == 2):
-            #     x = np.array([Real('x%s' % i) for i in range(len(weight[layer_index]))])
-            #     in_props = intermediate_domain_constraint(x, pl_lb, pl_ub, layer_index)
-            #     y = z3_layer_ws_net(x, weight, bias, layer_index + 1)
 
-            # elif(layer_index == 3):
-            #     x = np.array([Real('x%s' % i) for i in range(len(weight[layer_index]))])
-            #     in_props = intermediate_domain_constraint(x, pl_lb, pl_ub, layer_index)
-            #     y = z3_layer_ws_net(x, weight, bias, layer_index + 1)
-
-            # elif(layer_index == 4):
-            #     x = np.array([Real('x%s' % i) for i in range(len(weight[layer_index]))])
-            #     in_props = intermediate_domain_constraint(x, pl_lb, pl_ub, layer_index)
-            #     y = z3_layer5_ws_net(x, weight, bias)
-            
-            # elif(layer_index == 5):
-            #     x = np.array([Real('x%s' % i) for i in range(len(weight[layer_index]))])
-            #     in_props = intermediate_domain_constraint(x, pl_lb, pl_ub, layer_index)
-            #     y = z3_layer6_ws_net(x, weight, bias)
-            
-            # elif(layer_index == 6):
-            #     x = np.array([Real('x%s' % i) for i in range(len(weight[layer_index]))])
-            #     in_props = intermediate_domain_constraint(x, pl_lb, pl_ub, layer_index)
-            #     y = z3_layer7_ws_net(x, weight, bias)
-                
-            # elif(layer_index == 7):
-            #     x = np.array([Real('x%s' % i) for i in range(len(weight[layer_index]))])
-            #     in_props = intermediate_domain_constraint(x, pl_lb, pl_ub, layer_index)
-            #     y = z3_layer8_ws_net(x, weight, bias)
-            
-            # elif(layer_index == 8):
-            #     x = np.array([Real('x%s' % i) for i in range(len(weight[layer_index]))])
-            #     in_props = intermediate_domain_constraint(x, pl_lb, pl_ub, layer_index)
-            #     y = z3_layer9_ws_net(x, weight, bias)
-            # print("wassap", weight[0].shape)
+           
             s = Solver()             
             
             for i in in_props:    
@@ -344,12 +284,6 @@ def singular_verification(cand, df, weight, bias, ranges, pl_lb, pl_ub):
             else:
                 dead_node_mask[layer_index][neuron_index] = 0
 
-#            s.reset()
-#            for i in in_props:    
-#                s.add(i)
-#            s.add(y[neuron_index] < 0)
-#            if res == unsat:
-#                print('ACTIVE: ', neuron_index)
                             
     return dead_node_mask, candidates, count_finds/total_counts
 
@@ -377,27 +311,12 @@ def singular_verification_german(cand, df, weight, bias, ranges, pl_lb, pl_ub):
             if(layer_index == 0):
                 x = np.array([Int('x%s' % i) for i in range(len(weight[layer_index]))])
                 in_props = input_domain_constraint(df, x, ranges)
-                y = z3_layer1_ws_net_german(x, weight, bias)
+                y = z3_layer_ws_net(x, weight, bias, layer_index + 1)
 
-            elif(layer_index == 1):
+            else:
                 x = np.array([Real('x%s' % i) for i in range(len(weight[layer_index]))])
                 in_props = intermediate_domain_constraint(x, pl_lb, pl_ub, layer_index)
-                y = z3_layer2_ws_net(x, weight, bias)
-                
-            elif(layer_index == 2):
-                x = np.array([Real('x%s' % i) for i in range(len(weight[layer_index]))])
-                in_props = intermediate_domain_constraint(x, pl_lb, pl_ub, layer_index)
-                y = z3_layer3_ws_net(x, weight, bias)
-
-            elif(layer_index == 3):
-                x = np.array([Real('x%s' % i) for i in range(len(weight[layer_index]))])
-                in_props = intermediate_domain_constraint(x, pl_lb, pl_ub, layer_index)
-                y = z3_layer4_ws_net(x, weight, bias)
-
-            elif(layer_index == 4):
-                x = np.array([Real('x%s' % i) for i in range(len(weight[layer_index]))])
-                in_props = intermediate_domain_constraint(x, pl_lb, pl_ub, layer_index)
-                y = z3_layer5_ws_net(x, weight, bias)
+                y = z3_layer_ws_net(x, weight, bias, layer_index + 1)
 
             s = Solver()             
             
@@ -447,27 +366,13 @@ def singular_verification_bank(cand, df, weight, bias, ranges, pl_lb, pl_ub):
             if(layer_index == 0):
                 x = np.array([Int('x%s' % i) for i in range(len(weight[layer_index]))])
                 in_props = input_domain_constraint(df, x, ranges)
-                y = z3_layer1_ws_net_bank(x, weight, bias)
+                y = z3_layer_ws_net(x, weight, bias, layer_index + 1)
 
-            elif(layer_index == 1):
+            else:
                 x = np.array([Real('x%s' % i) for i in range(len(weight[layer_index]))])
                 in_props = intermediate_domain_constraint(x, pl_lb, pl_ub, layer_index)
-                y = z3_layer2_ws_net(x, weight, bias)
+                y = z3_layer_ws_net(x, weight, bias, layer_index + 1)
                 
-            elif(layer_index == 2):
-                x = np.array([Real('x%s' % i) for i in range(len(weight[layer_index]))])
-                in_props = intermediate_domain_constraint(x, pl_lb, pl_ub, layer_index)
-                y = z3_layer3_ws_net(x, weight, bias)
-
-            elif(layer_index == 3):
-                x = np.array([Real('x%s' % i) for i in range(len(weight[layer_index]))])
-                in_props = intermediate_domain_constraint(x, pl_lb, pl_ub, layer_index)
-                y = z3_layer4_ws_net(x, weight, bias)
-
-            elif(layer_index == 4):
-                x = np.array([Real('x%s' % i) for i in range(len(weight[layer_index]))])
-                in_props = intermediate_domain_constraint(x, pl_lb, pl_ub, layer_index)
-                y = z3_layer5_ws_net(x, weight, bias)
 
             s = Solver()             
             
