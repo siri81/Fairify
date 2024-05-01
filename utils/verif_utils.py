@@ -186,7 +186,7 @@ def load_german():
                 'foreign_worker', 'credit']
     na_values=[]
     df = pd.read_csv(filepath, sep=' ', header=None, names=column_names,na_values=na_values)
-    df['age'] = df['age'].apply(lambda x: np.float(x >= 26))
+    df['age'] = df['age'].apply(lambda x: np.float64(x >= 26))
     df = german_custom_preprocessing(df)
     feat_to_drop = ['personal_status']
     df = df.drop(feat_to_drop, axis=1)
@@ -242,7 +242,7 @@ def load_bank():
     df = dropped
     columns = ['education=Assoc-acdm', 'education=Assoc-voc', 'education=Bachelors',]
     
-    df['age'] = df['age'].apply(lambda x: np.float(x >= 25))
+    df['age'] = df['age'].apply(lambda x: np.float64(x >= 25))
     
     ## Feature selection
     # features_to_keep = []
