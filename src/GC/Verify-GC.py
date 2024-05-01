@@ -73,7 +73,7 @@ for model_file in model_files:
     print('==================  STARTING MODEL ' + model_file)
     model_name = model_file.split('.')[0]
     
-    model_funcs = 'utils.' + model_name + '-Model-Functions'
+    model_funcs = 'utils.' + 'Model-Functions'
     mod = import_module(model_funcs)
     layer_net = getattr(mod, 'layer_net')
     net = getattr(mod, 'net')

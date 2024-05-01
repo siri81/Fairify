@@ -70,7 +70,7 @@ for model_file in model_files:
     if model_name == '':
         continue
     
-    model_funcs = 'utils.' + model_name + '-Model-Functions'
+    model_funcs = 'utils.' + 'Model-Functions'
     mod = import_module(model_funcs)
     layer_net = getattr(mod, 'layer_net')
     net = getattr(mod, 'net')
